@@ -86,8 +86,9 @@ namespace QuickConsoleApp
                 {
                     throw new Exception("Someone ought to be listening.");
                 }
-            }
 
+                return true;
+            }
         }
 
         public bool GetDoubleJump(int h, int v, bool blackTurn)
