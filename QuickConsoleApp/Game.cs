@@ -169,7 +169,7 @@ namespace QuickConsoleApp
 
             for (int i = 0; i < 4; i++)
             {
-                bool b = CanMove(h0, v0, isBlack, ref possibleMoves[i, 0], ref possibleMoves[i, 1], out canJump, _);
+                bool b = CanMove(h0, v0, isBlack, ref possibleMoves[i, 0], ref possibleMoves[i, 1], out canJump, out _);
 
                 // If we can jump here, return immediately. If we can move but not jump, keep checking
                 // for a chance to jump.

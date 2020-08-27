@@ -33,7 +33,7 @@ namespace QuickConsoleApp
         {
             while (true)
             {
-                string str = RequestInput(blackTurn);
+                string str = RequestInput(blackTurn, false);
 
                 if (str == "EXIT") return false;
 
@@ -41,14 +41,14 @@ namespace QuickConsoleApp
                 Direction direction = Direction.Northeast;
                 int h = 0, v = 0;
 
-                if (str.Length == 5 && str[2] == ' ')
+                if (str.Length != 5 || str[2] != ' ')
                 {
                     success = false;
                 }
                 else
                 {
                     h = str[0] - 'A' + 1;
-                    v = str[0] - '1' + 1;
+                    v = str[1] - '1' + 1;
 
                     switch (str.Substring(3))
                     {
@@ -78,12 +78,68 @@ namespace QuickConsoleApp
 
                 var e = new MoveRequestedEventArgs() { h = h, v = v, direction = direction };
 
-                MoveRequested(this, e);
+                if (MoveRequested != null)
+                {
+                    MoveRequested(this, e);
+                }
+                else
+                {
+                    throw new Exception("Someone ought to be listening.");
+                }
             }
 
         }
 
-        private string RequestInput(bool blackTurn)
+        public bool GetDoubleJump(int h, int v, bool blackTurn)
+        {
+            while (true)
+            {
+                string str = RequestInput(blackTurn, true);
+
+                if (str == "EXIT") return false;
+
+                bool success = true;
+                Direction direction = Direction.Northeast;
+
+                if (str.Length != 2)
+                {
+                    success = false;
+                }
+                else
+                {
+                    switch (str)
+                    {
+                        case "NW":
+                            direction = Direction.Northwest;
+                            break;
+                        case "NE":
+                            direction = Direction.Northeast;
+                            break;
+                        case "SW":
+                            direction = Direction.Southwest;
+                            break;
+                        case "SE":
+                            direction = Direction.Southeast;
+                            break;
+                        default:
+                            success = false;
+                            break;
+                    }
+                }
+
+                if (!success)
+                {
+                    Console.WriteLine("Invalid input. Type 'help' or '?' for help.");
+                    continue;
+                }
+
+                var e = new MoveRequestedEventArgs() { h = h, v = v, direction = direction };
+
+                MoveRequested(this, e);
+            }
+        }
+
+        private string RequestInput(bool blackTurn, bool isDblJump)
         {
             while (true)
             {
@@ -102,8 +158,15 @@ namespace QuickConsoleApp
 
                 if (str == "HELP" || str == "?")
                 {
-                    Console.WriteLine("Please type the desired move by indicating the location of the piece followed by the direction to move it.");
-                    Console.WriteLine("For example: A1 SE");
+                    if (!isDblJump)
+                    {
+                        Console.WriteLine("Please type the desired move by indicating the location of the piece followed by the direction to move it.");
+                        Console.WriteLine("For example: A1 SE");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please type the desired direction to jump. For example: SE");
+                    }
                     continue;
                 }
 

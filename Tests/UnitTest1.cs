@@ -25,31 +25,30 @@ namespace Tests
             var game = new Game();
             var state = game.GetState();
 
-            bool jumped;
             try
             {
-                game.Move(1, 1, false, Direction.Southwest, out jumped);
+                game.Move(1, 1, false, Direction.Southwest, out _, out _, out _);
                 Assert.Fail();
             }
             catch (RuleBrokenException) { }
 
             try
             {
-                game.Move(1, 1, false, Direction.Southeast, out jumped);
+                game.Move(1, 1, false, Direction.Southeast, out _, out _, out _);
                 Assert.Fail();
             }
             catch (RuleBrokenException) { }
 
             try
             {
-                game.Move(1, 1, false, Direction.Northwest, out jumped);
+                game.Move(1, 1, false, Direction.Northwest, out _, out _, out _);
                 Assert.Fail();
             }
             catch (RuleBrokenException) { }
 
             try
             {
-                game.Move(1, 1, false, Direction.Northeast, out jumped);
+                game.Move(1, 1, false, Direction.Northeast, out _, out _, out _);
                 Assert.Fail();
             }
             catch (RuleBrokenException) { }
@@ -57,7 +56,7 @@ namespace Tests
             try
             {
                 // Move the wrong direction, into pieces
-                game.Move(1, 3, false, Direction.Northeast, out jumped);
+                game.Move(1, 3, false, Direction.Northeast, out _, out _, out _);
                 Assert.Fail();
             }
             catch (RuleBrokenException) { }
@@ -65,7 +64,7 @@ namespace Tests
             try
             {
                 // Move off the board
-                game.Move(1, 3, false, Direction.Southwest, out jumped);
+                game.Move(1, 3, false, Direction.Southwest, out _, out _, out _);
                 Assert.Fail();
             }
             catch (RuleBrokenException) { }
@@ -73,7 +72,7 @@ namespace Tests
             try
             {
                 // Space doesn't exist
-                game.Move(2, 3, false, Direction.Southwest, out jumped);
+                game.Move(2, 3, false, Direction.Southwest, out _, out _, out _);
                 Assert.Fail();
             }
             catch (RuleBrokenException) { }
@@ -81,7 +80,7 @@ namespace Tests
             try
             {
                 // Empty space
-                game.Move(4, 4, false, Direction.Southwest, out jumped);
+                game.Move(4, 4, false, Direction.Southwest, out _, out _, out _);
                 Assert.Fail();
             }
             catch (RuleBrokenException) { }
@@ -89,7 +88,7 @@ namespace Tests
             try
             {
                 // Wrong team
-                game.Move(3, 3, true, Direction.Southwest, out jumped);
+                game.Move(3, 3, true, Direction.Southwest, out _, out _, out _);
                 Assert.Fail();
             }
             catch (RuleBrokenException) { }
@@ -107,22 +106,22 @@ namespace Tests
 
             var game = new Game();
             var state = game.GetState();
-            bool jumped;
+            bool canDblJump;
 
-            game.Move(1, 3, false, Direction.Southeast, out jumped);
-            Assert.IsFalse(jumped);
+            game.Move(1, 3, false, Direction.Southeast, out _, out _, out canDblJump);
+            Assert.IsFalse(canDblJump);
             Assert.IsTrue(state.GetSquare(1, 3).Piece == State.Piece.Empty);
             Assert.IsTrue(state.GetSquare(2, 4).Piece == State.Piece.White);
 
-            game.Move(2, 6, true, Direction.Northeast, out jumped);
-            Assert.IsFalse(jumped);
+            game.Move(2, 6, true, Direction.Northeast, out _, out _, out canDblJump);
+            Assert.IsFalse(canDblJump);
             Assert.IsTrue(state.GetSquare(2, 6).Piece == State.Piece.Empty);
             Assert.IsTrue(state.GetSquare(3, 5).Piece == State.Piece.Black);
 
             try
             {
                 // Try moving piece backwards.
-                game.Move(2, 4, false, Direction.Northwest, out jumped);
+                game.Move(2, 4, false, Direction.Northwest, out _, out _, out canDblJump);
                 Assert.Fail();
             }
             catch (RuleBrokenException) { }
@@ -134,26 +133,26 @@ namespace Tests
 
             var game = new Game();
             var state = game.GetState();
-            bool jumped;
+            bool canDblJump;
 
-            game.Move(1, 3, false, Direction.Southeast, out jumped);
-            Assert.IsFalse(jumped);
+            game.Move(1, 3, false, Direction.Southeast, out _, out _, out canDblJump);
+            Assert.IsFalse(canDblJump);
             Assert.IsTrue(state.GetSquare(1, 3).Piece == State.Piece.Empty);
             Assert.IsTrue(state.GetSquare(2, 4).Piece == State.Piece.White);
 
-            game.Move(4, 6, true, Direction.Northwest, out jumped);
-            Assert.IsFalse(jumped);
+            game.Move(4, 6, true, Direction.Northwest, out _, out _, out canDblJump);
+            Assert.IsFalse(canDblJump);
             Assert.IsTrue(state.GetSquare(4, 6).Piece == State.Piece.Empty);
             Assert.IsTrue(state.GetSquare(3, 5).Piece == State.Piece.Black);
 
-            game.Move(2, 4, false, Direction.Southeast, out jumped);
-            Assert.IsTrue(jumped);
+            game.Move(2, 4, false, Direction.Southeast, out _, out _, out canDblJump);
+            Assert.IsFalse(canDblJump);
             Assert.IsTrue(state.GetSquare(2, 4).Piece == State.Piece.Empty);
             Assert.IsTrue(state.GetSquare(3, 5).Piece == State.Piece.Empty);
             Assert.IsTrue(state.GetSquare(4, 6).Piece == State.Piece.White);
 
-            game.Move(5, 7, true, Direction.Northwest, out jumped);
-            Assert.IsTrue(jumped);
+            game.Move(5, 7, true, Direction.Northwest, out _, out _, out canDblJump);
+            Assert.IsFalse(canDblJump);
             Assert.IsTrue(state.GetSquare(5, 7).Piece == State.Piece.Empty);
             Assert.IsTrue(state.GetSquare(4, 6).Piece == State.Piece.Empty);
             Assert.IsTrue(state.GetSquare(3, 5).Piece == State.Piece.Black);

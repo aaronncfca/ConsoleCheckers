@@ -10,51 +10,49 @@ namespace QuickConsoleApp
     {
         static void Main(string[] args)
         {
-            var game = new Game();
+            game = new Game();
             var state = game.GetState();
-            var consoleView = new ConsoleView();
-            bool blackTurn = false;
+            consoleView = new ConsoleView();
+            blackTurn = false;
+
+            consoleView.MoveRequested += HandleMoveRequested;
 
             consoleView.ShowBoard(state);
 
             while (true)
             {
-                var temp = new State.SquareState(); // TODO: refactor out.
-                if (blackTurn)
-                {
-                    temp.Piece = State.Piece.Black;
-                }
-                else
-                {
-                    temp.Piece = State.Piece.White;
-                }
-                Console.Write($"{ consoleView.StrSquare(temp) } > ");
-                bool success = consoleView.TryGetMove(out int h, out int v, out Direction direction);
-                if(!success)
-                {
-                    Console.WriteLine("Please try again. Type 'help' or '?' for help.");
-                    continue;
-                }
-
-                try
-                {
-                    game.Move(h, v, blackTurn, direction, out int h1, out int v1, out bool canDblJump);
-                    // TODO: check for double-jump if jumped.
-                    while(canDblJump)
-                    {
-                        consoleView.GetInput(h1, v1);
-                    }
-
-                    blackTurn = !blackTurn;
-                }
-                catch(RuleBrokenException e)
-                {
-                    Console.WriteLine(e.Message);
-                    continue;
-                }
+                consoleView.GetInput(blackTurn);
 
                 consoleView.ShowBoard(state);
             }
         }
+        private static void HandleMoveRequested(object sender, ConsoleView.MoveRequestedEventArgs e)
+        {
+            try
+            {
+                game.Move(e.h, e.v, blackTurn, e.direction, out int h1, out int v1, out bool canDblJump);
+
+                if (canDblJump)
+                {
+                    consoleView.GetDoubleJump(h1, v1, blackTurn);
+                    // TODO: this currently reults in recursion to this method with no way of
+                    // retrying the double-jump if the user gives an invalid command (i.e.
+                    // GetDoubleJump returns without the jump having been executed.)
+                }
+                else
+                {
+                    blackTurn = !blackTurn;
+                }
+            }
+            catch (RuleBrokenException ex)
+            {
+                consoleView.ShowError(ex.Message);
+            }
+
+        }
+
+        private static Game game;
+        private static ConsoleView consoleView;
+        private static bool blackTurn;
     }
 }
