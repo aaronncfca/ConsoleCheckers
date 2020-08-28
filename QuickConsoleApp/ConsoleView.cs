@@ -205,11 +205,13 @@ namespace QuickConsoleApp
              *    
              */
 
+            Console.WriteLine();
             Console.WriteLine("NW   A  B  C  D  E  F  G  H   NE");
             Console.WriteLine("   ┌────────────────────────┐   ");
             Console.Write(StrState(state, true, ""));
             Console.WriteLine("   └────────────────────────┘   ");
             Console.WriteLine("SW                            SE");
+            Console.WriteLine();
         }
 
         private string StrState(State state, bool withCoords, string indent)
@@ -238,7 +240,7 @@ namespace QuickConsoleApp
                 case State.Piece.Black:
                     return "[\u25A1]";
                 case State.Piece.White:
-                    return "(Ö)";
+                    return "(O)";
                 case State.Piece.BlackKing:
                     return "[K]";
                 case State.Piece.WhiteKing:
