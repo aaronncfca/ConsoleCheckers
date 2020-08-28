@@ -97,6 +97,8 @@ namespace QuickConsoleApp
         {
             while (true)
             {
+                Console.WriteLine($"Piece at { (char)(state.PieceMustJump.Item1 + 'A' - 1) }{(char)(state.PieceMustJump.Item2 + '1' - 1)} " +
+                        $"can jump again!");
                 string str = RequestInput(state.IsBlackTurn, true);
 
                 if (str == "EXIT") return false;

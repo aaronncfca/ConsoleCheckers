@@ -103,10 +103,10 @@ namespace QuickConsoleApp
             // jumping and has selected a move that is a jump.
             if (state.PieceMustJump != null)
             {
-                if (state.PieceMustJump.Item1 != h0 || state.PieceMustJump.Item2 != h1 || !canJump)
+                if (state.PieceMustJump.Item1 != h0 || state.PieceMustJump.Item2 != h0 || !canJump)
                 {
                     throw new RuleBrokenException($"Unable to move there: " +
-                        $"piece at { (char)(state.PieceMustJump.Item1 + 'A' - 1) }{(char)(state.PieceMustJump.Item2 + '1' - 1)}" +
+                        $"piece at { (char)(state.PieceMustJump.Item1 + 'A' - 1) }{(char)(state.PieceMustJump.Item2 + '1' - 1)} " +
                         $"must jump again.");
                 }
             }
