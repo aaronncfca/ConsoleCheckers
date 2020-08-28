@@ -36,13 +36,14 @@ namespace QuickConsoleApp
             BlackKing = PieceKingBit | PieceBlackBit    // 5
         }
 
-        [Flags]
-        public enum PieceFlags
-        {
-            Black = PieceBlackBit,
-            Standard = PieceStandardBit,
-            King = PieceKingBit
-        }
+        // Alternate enum for Pieces for more convenient use of bitwise operations.
+        //[Flags]
+        //public enum PieceFlags
+        //{
+        //    Black = PieceBlackBit,
+        //    Standard = PieceStandardBit,
+        //    King = PieceKingBit
+        //}
 
         /// <summary>
         /// Bitwise indicator that a Piece is black. If the Piece is nonzero and the black
@@ -64,6 +65,9 @@ namespace QuickConsoleApp
                     board[h, v] = new SquareState();
                 }
             }
+
+            IsBlackTurn = true;
+            PieceMustJump = null;
         }
 
         /// <summary>
@@ -79,18 +83,31 @@ namespace QuickConsoleApp
                     board[h, v].Piece = state.board[h, v].Piece;
                 }
             }
+
+            IsBlackTurn = state.IsBlackTurn;
+            PieceMustJump = state.PieceMustJump;
         }
 
+        /// <summary>
+        /// Retrieve the SquareState at the given coordinates on the board.
+        /// </summary>
         public SquareState GetSquare(int h, int v)
         {
-            return board[convertCoord(h), convertCoord(v)];
+            return board[ConvertCoord(h), ConvertCoord(v)];
         }
 
+        /// <summary>
+        /// Place the given SquareState at the given coordinates on the board.
+        /// </summary>
         public void SetSquare(int h, int v, SquareState state)
         {
-            board[convertCoord(h), convertCoord(v)] = state;
+            board[ConvertCoord(h), ConvertCoord(v)] = state;
         }
 
+        /// <summary>
+        /// Place a new SquareState at the given coordinates, initialized to the given
+        /// Piece value.
+        /// </summary>
         public void SetSquare(int h, int v, Piece piece)
         {
             SetSquare(h, v, new SquareState(piece));
@@ -102,7 +119,7 @@ namespace QuickConsoleApp
             set { SetSquare(h, v, value); }
         }
 
-        private int convertCoord(int coordinate)
+        private int ConvertCoord(int coordinate)
         {
             if(coordinate < 1 || coordinate > 8)
             {
@@ -111,6 +128,20 @@ namespace QuickConsoleApp
 
             return coordinate - 1;
         }
+
+        /// <summary>
+        /// True if it's black's turn to move or black is currently moving; false
+        /// if white's. (Black = player starting at the south side of the board,
+        /// v = 6 through 8.)
+        /// </summary>
+        public bool IsBlackTurn { get; set; }
+
+        /// <summary>
+        /// If not null, indicates that the piece at this coordinate must jump
+        /// another piece before any other moves are made (this is an edge case
+        /// caused by double-jumps).
+        /// </summary>
+        public Tuple<int, int> PieceMustJump { get; set; }
 
         private SquareState[,] board;
     }

@@ -11,38 +11,32 @@ namespace QuickConsoleApp
         static void Main(string[] args)
         {
             game = new Game();
-            var state = game.GetState();
             consoleView = new ConsoleView();
-            blackTurn = false;
 
             consoleView.MoveRequested += HandleMoveRequested;
 
-            consoleView.ShowBoard(state);
+            consoleView.ShowBoard(game.GetState());
 
             while (true)
             {
-                if (!consoleView.GetInput(blackTurn)) return;
+                if (!consoleView.GetInput(game.GetState())) return;
             }
         }
         private static void HandleMoveRequested(object sender, ConsoleView.MoveRequestedEventArgs e)
         {
             try
             {
-                game.Move(e.h, e.v, blackTurn, e.direction, out int h1, out int v1, out bool canDblJump);
+                game.Move(e.h, e.v, e.direction, out int h1, out int v1, out bool canDblJump);
 
                 consoleView.ShowBoard(game.GetState());
 
                 if (canDblJump)
                 {
-                    consoleView.GetDoubleJump(h1, v1, blackTurn);
+                    consoleView.GetDoubleJump(game.GetState());
                     // TODO: this currently reults in recursion to this method with no way of
                     // retrying the double-jump if the user gives an invalid command (i.e.
                     // GetDoubleJump returns without the jump having been executed.)
                     // TODO: exit application if returns false.
-                }
-                else
-                {
-                    blackTurn = !blackTurn;
                 }
             }
             catch (RuleBrokenException ex)
@@ -54,6 +48,5 @@ namespace QuickConsoleApp
 
         private static Game game;
         private static ConsoleView consoleView;
-        private static bool blackTurn;
     }
 }

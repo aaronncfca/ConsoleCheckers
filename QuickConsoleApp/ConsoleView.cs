@@ -29,11 +29,11 @@ namespace QuickConsoleApp
         /// <param name="v"></param>
         /// <param name="direction"></param>
         /// <returns></returns>
-        public bool GetInput(bool blackTurn)
+        public bool GetInput(State state)
         {
             while (true)
             {
-                string str = RequestInput(blackTurn, false);
+                string str = RequestInput(state.IsBlackTurn, false);
 
                 if (str == "EXIT") return false;
 
@@ -91,11 +91,13 @@ namespace QuickConsoleApp
             }
         }
 
-        public bool GetDoubleJump(int h, int v, bool blackTurn)
+        // TODO: this does not need to be a separate method, since the state indicates
+        // when a double jump needs to happen.
+        public bool GetDoubleJump(State state)
         {
             while (true)
             {
-                string str = RequestInput(blackTurn, true);
+                string str = RequestInput(state.IsBlackTurn, true);
 
                 if (str == "EXIT") return false;
 
@@ -134,7 +136,10 @@ namespace QuickConsoleApp
                     continue;
                 }
 
-                var e = new MoveRequestedEventArgs() { h = h, v = v, direction = direction };
+                var e = new MoveRequestedEventArgs() {
+                    h = state.PieceMustJump.Item1,
+                    v = state.PieceMustJump.Item2,
+                    direction = direction };
 
                 MoveRequested(this, e);
             }

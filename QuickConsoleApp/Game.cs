@@ -89,13 +89,27 @@ namespace QuickConsoleApp
             return state;
         }
 
-        public void Move(int h0, int v0, bool isBlack, Direction direction, out int h1, out int v1, out bool canDblJmp)
+        public void Move(int h0, int v0, Direction direction, out int h1, out int v1, out bool canDblJmp)
         {
             canDblJmp = false;
 
             GetCoords(h0, v0, direction, out h1, out v1);
 
+            bool isBlack = state.IsBlackTurn;
+
             bool canMove = CanMove(h0, v0, isBlack, ref h1, ref v1, out bool canJump, out string reason);
+
+            // If we are in the middle of a double-jump, ensure the user has chosen the piece that is
+            // jumping and has selected a move that is a jump.
+            if (state.PieceMustJump != null)
+            {
+                if (state.PieceMustJump.Item1 != h0 || state.PieceMustJump.Item2 != h1 || !canJump)
+                {
+                    throw new RuleBrokenException($"Unable to move there: " +
+                        $"piece at { (char)(state.PieceMustJump.Item1 + 'A' - 1) }{(char)(state.PieceMustJump.Item2 + '1' - 1)}" +
+                        $"must jump again.");
+                }
+            }
 
             if (!canMove) throw new RuleBrokenException($"Unable to move there: { reason }");
 
@@ -113,11 +127,22 @@ namespace QuickConsoleApp
 
             if(canJump)
             {
+                // Remove the jumped Piece.
                 GetCoords(h0, v0, direction, out int hJumped, out int vJumped);
                 state.SetSquare(hJumped, vJumped, State.Piece.Empty);
 
                 // Check whether a double jump is possible.
                 CanMove(h1, v1, isBlack, out canDblJmp);
+            }
+
+            if(!canDblJmp)
+            {
+                state.IsBlackTurn = !isBlack;
+                state.PieceMustJump = null;
+            }
+            else
+            {
+                state.PieceMustJump = new Tuple<int, int>(h1, v1);
             }
 
             stateHistory.Add(new State(state));
@@ -195,6 +220,7 @@ namespace QuickConsoleApp
                 || v1 < 1 || v1 > 8)
             {
                 reason = "Can't move off the board.";
+                return false;
             }
 
             State.Piece p0 = state[h0, v0].Piece;
