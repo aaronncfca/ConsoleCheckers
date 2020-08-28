@@ -31,6 +31,12 @@ namespace QuickConsoleApp
         /// <returns></returns>
         public bool GetInput(State state)
         {
+            if (state.PieceMustJump != null)
+            {
+                Console.WriteLine($"Piece at { (char)(state.PieceMustJump.Item1 + 'A' - 1) }{(char)(state.PieceMustJump.Item2 + '1' - 1)} " +
+                        $"can jump again!");
+            }
+
             while (true)
             {
                 string str = RequestInput(state.IsBlackTurn, false);
@@ -41,16 +47,31 @@ namespace QuickConsoleApp
                 Direction direction = Direction.Northeast;
                 int h = 0, v = 0;
 
-                if (str.Length != 5 || str[2] != ' ')
+                // If in a double-jump, give the user the option of specifying only the
+                // direction to move.
+                if (state.PieceMustJump != null && str.Length == 2)
                 {
-                    success = false;
+                    h = state.PieceMustJump.Item1;
+                    v = state.PieceMustJump.Item2;
                 }
                 else
                 {
-                    h = str[0] - 'A' + 1;
-                    v = str[1] - '1' + 1;
+                    if (str.Length != 5 || str[2] != ' ')
+                    {
+                        success = false;
+                    }
+                    else
+                    {
+                        h = str[0] - 'A' + 1;
+                        v = str[1] - '1' + 1;
 
-                    switch (str.Substring(3))
+                        str = str.Substring(3);
+                    }
+                }
+
+                if(success)
+                {
+                    switch (str)
                     {
                         case "NW":
                             direction = Direction.Northwest;
@@ -84,66 +105,10 @@ namespace QuickConsoleApp
                 }
                 else
                 {
-                    throw new Exception("Someone ought to be listening.");
+                    throw new Exception("Someone ought to be listening."); // Should never happen.
                 }
 
                 return true;
-            }
-        }
-
-        // TODO: this does not need to be a separate method, since the state indicates
-        // when a double jump needs to happen.
-        public bool GetDoubleJump(State state)
-        {
-            while (true)
-            {
-                Console.WriteLine($"Piece at { (char)(state.PieceMustJump.Item1 + 'A' - 1) }{(char)(state.PieceMustJump.Item2 + '1' - 1)} " +
-                        $"can jump again!");
-                string str = RequestInput(state.IsBlackTurn, true);
-
-                if (str == "EXIT") return false;
-
-                bool success = true;
-                Direction direction = Direction.Northeast;
-
-                if (str.Length != 2)
-                {
-                    success = false;
-                }
-                else
-                {
-                    switch (str)
-                    {
-                        case "NW":
-                            direction = Direction.Northwest;
-                            break;
-                        case "NE":
-                            direction = Direction.Northeast;
-                            break;
-                        case "SW":
-                            direction = Direction.Southwest;
-                            break;
-                        case "SE":
-                            direction = Direction.Southeast;
-                            break;
-                        default:
-                            success = false;
-                            break;
-                    }
-                }
-
-                if (!success)
-                {
-                    Console.WriteLine("Invalid input. Type 'help' or '?' for help.");
-                    continue;
-                }
-
-                var e = new MoveRequestedEventArgs() {
-                    h = state.PieceMustJump.Item1,
-                    v = state.PieceMustJump.Item2,
-                    direction = direction };
-
-                MoveRequested(this, e);
             }
         }
 
