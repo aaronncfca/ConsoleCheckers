@@ -56,9 +56,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuickConsoleApp\QuickConsoleApp.csproj">
+    <ProjectReference Include="..\ConsoleCheckers\ConsoleCheckers.csproj">
       <Project>{81b75b18-db4f-4f4d-9bee-15a246542320}</Project>
-      <Name>QuickConsoleApp</Name>
+      <Name>ConsoleCheckers</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

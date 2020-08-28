@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 
 
-namespace QuickConsoleApp
+namespace ConsoleCheckers
 {
     public class State
     {

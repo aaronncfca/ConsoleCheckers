@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickConsoleApp", "QuickConsoleApp\QuickConsoleApp.csproj", "{81B75B18-DB4F-4F4D-9BEE-15A246542320}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleCheckers", "ConsoleCheckers\ConsoleCheckers.csproj", "{81B75B18-DB4F-4F4D-9BEE-15A246542320}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{C99BE662-A9A6-4DCE-B445-F3EB9DCC182F}"
 	ProjectSection(ProjectDependencies) = postProject
