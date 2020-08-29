@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +12,20 @@ namespace ConsoleCheckers
         public ConsoleView()
         {
             Console.OutputEncoding = System.Text.Encoding.Unicode;
+
+            var assemblyName = Assembly.GetExecutingAssembly().GetName();
+
+            Console.WriteLine($"Welcome to Console Checkers version { assemblyName.Version }!");
+            Console.WriteLine();
+            Console.WriteLine("To play, take turns specifying the coordinates of the piece that the player would like");
+            Console.WriteLine("to move and the direction to move it. For example, the command \"A3 SE\" would move the");
+            Console.WriteLine("the round piece on the left side downwards.");
+            Console.WriteLine();
+            Console.WriteLine("KNOWN ISSUE:");
+            Console.WriteLine("    The game engine does not currently check for end-game scenarios or for scenarios");
+            Console.WriteLine("    where a player cannot move. It will continue asking for a valid move even when there");
+            Console.WriteLine("    is none.");
+            Console.WriteLine();
         }
 
         public event EventHandler<MoveRequestedEventArgs> MoveRequested;
