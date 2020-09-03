@@ -36,12 +36,12 @@ namespace ConsoleCheckers
         public State()
         {
             board = new SquareState[8, 8];
-            // Handled by SquareState initializer.
-            for (int h = 0; h <= 7; h++)
+
+            for (int h = 1; h <= 8; h++)
             {
-                for (int v = 0; v <= 7; v++)
+                for (int v = 1; v <= 8; v++)
                 {
-                    board[h, v] = new SquareState();
+                    SetSquare(h, v, PieceType.Empty);
                 }
             }
 
@@ -53,13 +53,15 @@ namespace ConsoleCheckers
         /// Initializes a copy of the given state.
         /// </summary>
         /// <param name="state">State to copy</param>
-        public State(State state) : this()
+        public State(State state)
         {
-            for (int h = 0; h <= 7; h++)
+            board = new SquareState[8, 8];
+
+            for (int h = 1; h <= 8; h++)
             {
-                for (int v = 0; v <= 7; v++)
+                for (int v = 1; v <= 8; v++)
                 {
-                    board[h, v].PieceType = state.board[h, v].PieceType;
+                    SetSquare(h, v, state[h, v].PieceType);
                 }
             }
 
@@ -80,7 +82,9 @@ namespace ConsoleCheckers
         /// </summary>
         public void SetSquare(int h, int v, SquareState state)
         {
+            // ConvertCoord will throw an exception if out of bounds.
             board[ConvertCoord(h), ConvertCoord(v)] = state;
+            state.Move(h, v);
         }
 
         /// <summary>
@@ -89,7 +93,8 @@ namespace ConsoleCheckers
         /// </summary>
         public void SetSquare(int h, int v, PieceType piece)
         {
-            SetSquare(h, v, new SquareState(piece));
+            // The coords of the new SquareSpace will be set in SetSquare, so we use 1, 1 here.
+            SetSquare(h, v, new SquareState(1, 1, piece));
         }
 
         public SquareState this[int h, int v]

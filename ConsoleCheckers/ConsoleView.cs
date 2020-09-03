@@ -128,7 +128,7 @@ namespace ConsoleCheckers
         {
             while (true)
             {
-                var temp = new SquareState();
+                var temp = new SquareState(1, 1);
                 if (blackTurn)
                 {
                     temp.PieceType = State.PieceType.Standard | State.PieceType.Black;
