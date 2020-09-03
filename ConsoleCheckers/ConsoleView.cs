@@ -131,11 +131,11 @@ namespace ConsoleCheckers
                 var temp = new SquareState();
                 if (blackTurn)
                 {
-                    temp.Piece = State.Piece.Black;
+                    temp.PieceType = State.PieceType.Standard | State.PieceType.Black;
                 }
                 else
                 {
-                    temp.Piece = State.Piece.White;
+                    temp.PieceType = State.PieceType.Standard;
                 }
                 Console.Write($"{ StrSquare(temp) } > ");
 
@@ -191,7 +191,7 @@ namespace ConsoleCheckers
             Console.WriteLine();
         }
 
-        private string StrState(State state, bool withCoords, string indent)
+        private string StrState(State state, bool withCoords, string indent) //TODO: either respect or remove "indent"
         {
             var str = new StringBuilder();
             for (int v = 1; v <= 8; v++)
@@ -212,17 +212,17 @@ namespace ConsoleCheckers
         
         public string StrSquare(SquareState square)
         {
-            switch (square.Piece)
+            switch (square.PieceType)
             {
-                case State.Piece.Black:
+                case State.PieceType.Standard | State.PieceType.Black:
                     return "[\u25A1]";
-                case State.Piece.White:
+                case State.PieceType.Standard:
                     return "(O)";
-                case State.Piece.BlackKing:
+                case State.PieceType.King | State.PieceType.Black:
                     return "[K]";
-                case State.Piece.WhiteKing:
+                case State.PieceType.King:
                     return "(K)";
-                case State.Piece.Empty:
+                case State.PieceType.Empty:
                     return "   ";
                 default:
                     throw new ArgumentOutOfRangeException();

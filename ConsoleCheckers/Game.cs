@@ -117,16 +117,16 @@ namespace ConsoleCheckers
             {
                 // This piece has reached the other side! It's a king.
                 // Note that the piece may already be a king, but that's ok.
-                state[h1, v1].Piece = isBlack ? State.Piece.BlackKing : State.Piece.WhiteKing;
+                state[h1, v1].PieceType = State.PieceType.King | (isBlack ? State.PieceType.Black : 0);
             }
 
-            state.SetSquare(h0, v0, State.Piece.Empty);
+            state.SetSquare(h0, v0, State.PieceType.Empty);
 
             if(canJump)
             {
                 // Remove the jumped Piece.
                 GetCoords(h0, v0, direction, out int hJumped, out int vJumped);
-                state.SetSquare(hJumped, vJumped, State.Piece.Empty);
+                state.SetSquare(hJumped, vJumped, State.PieceType.Empty);
 
                 // Check whether a double jump is possible.
                 CanMove(h1, v1, isBlack, out canDblJmp);
@@ -220,9 +220,9 @@ namespace ConsoleCheckers
                 return false;
             }
 
-            State.Piece p0 = state[h0, v0].Piece;
+            State.PieceType p0 = state[h0, v0].PieceType;
 
-            if (p0 == State.Piece.Empty)
+            if (p0 == State.PieceType.Empty)
             {
                 reason = "No piece at given coordinates.";
                 return false;
@@ -238,16 +238,16 @@ namespace ConsoleCheckers
             }
 
             // Ensure the piece is the color of the player whose turn it is.
-            if (isBlack != (((int)p0 & State.PieceBlackBit) != 0))
+            if (isBlack != p0.HasFlag(State.PieceType.Black))
             {
                 reason = "It's not your turn.";
                 return false;
             }
 
-            if (((int)p0 & State.PieceKingBit) == 0)
+            if (!p0.HasFlag(State.PieceType.King))
             {
                 // Piece is not a king.  Make sure it's being moved in the right direction.
-                if (((int)p0 & State.PieceBlackBit) != 0)
+                if (p0.HasFlag(State.PieceType.Black))
                 {
                     // Piece is black, heading north (towards lower values)
                     if (v1 > v0)
@@ -267,17 +267,17 @@ namespace ConsoleCheckers
                 }
             }
 
-            State.Piece p1 = state[h1, v1].Piece;
+            State.PieceType p1 = state[h1, v1].PieceType;
 
             // Moving to an empty square. Go ahead!
-            if (p1 == State.Piece.Empty)
+            if (p1 == State.PieceType.Empty)
             {
                 reason = "";
                 return true;
             }
 
 
-            if (((int)p0 & State.PieceBlackBit) == ((int)p1 & State.PieceBlackBit))
+            if ((p0 & State.PieceType.Black) == (p1 & State.PieceType.Black))
             {
                 reason = "You have a piece in the way.";
                 return false;
@@ -296,9 +296,9 @@ namespace ConsoleCheckers
                 }
 
 
-                State.Piece p2 = state[h2, v2].Piece;
+                State.PieceType p2 = state[h2, v2].PieceType;
 
-                if (p2 != State.Piece.Empty)
+                if (p2 != State.PieceType.Empty)
                 {
                     reason = "Jump is blocked.";
                     return false;
@@ -317,9 +317,9 @@ namespace ConsoleCheckers
         private State state;
         private List<State> stateHistory;
 
-        private const State.Piece W = State.Piece.White;
-        private const State.Piece B = State.Piece.Black;
-        private static State.Piece[,] standardStartArray => new State.Piece[,] {
+        private const State.PieceType W = State.PieceType.Standard;
+        private const State.PieceType B = State.PieceType.Standard | State.PieceType.Black;
+        private static State.PieceType[,] standardStartArray => new State.PieceType[,] {
             { W, 0, W, 0, W, 0, W, 0 },
             { 0, W, 0, W, 0, W, 0, W },
             { W, 0, W, 0, W, 0, W, 0 },
@@ -329,7 +329,7 @@ namespace ConsoleCheckers
             { B, 0, B, 0, B, 0, B, 0 },
             { 0, B, 0, B, 0, B, 0, B }
         };
-        private static State.Piece[,] shortStartArray => new State.Piece[,] {
+        private static State.PieceType[,] shortStartArray => new State.PieceType[,] {
             { W, 0, W, 0, W, 0, W, 0 },
             { 0, W, 0, W, 0, W, 0, W },
             { 0, 0, 0, 0, 0, 0, 0, 0 },

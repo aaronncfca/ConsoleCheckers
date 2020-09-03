@@ -5,31 +5,32 @@ namespace ConsoleCheckers
 {
     public class State
     {
-        public enum Piece
-        {
-            Empty = 0,
-            White = PieceStandardBit,                   // 2 (yes, we skip the value 1)
-            Black = PieceStandardBit | PieceBlackBit,   // 3
-            WhiteKing = PieceKingBit,                   // 4
-            BlackKing = PieceKingBit | PieceBlackBit    // 5
-        }
-
-        // Alternate enum for Pieces for more convenient use of bitwise operations.
-        //[Flags]
-        //public enum PieceFlags
-        //{
-        //    Black = PieceBlackBit,
-        //    Standard = PieceStandardBit,
-        //    King = PieceKingBit
-        //}
-
         /// <summary>
-        /// Bitwise indicator that a Piece is black. If the Piece is nonzero and the black
-        /// bit is not set, then the Piece is white.
+        /// Used to store and test the type of piece in a given SquareState.
         /// </summary>
-        public const int PieceBlackBit = 0b001;
-        public const int PieceStandardBit = 0b010;
-        public const int PieceKingBit = 0b100;
+        [Flags]
+        public enum PieceType
+        {
+            /// <summary>
+            /// No piece exists here.
+            /// </summary>
+            Empty = 0,
+
+            /// <summary>
+            /// Set if this piece is black; clear if this piece is white or empty.
+            /// </summary>
+            Black = 1,
+
+            /// <summary>
+            /// Set if this piece is not empty unless it's a king.
+            /// </summary>
+            Standard = 2,
+
+            /// <summary>
+            /// Set if this piece is a king.
+            /// </summary>
+            King = 4
+        }
 
 
         public State()
@@ -58,7 +59,7 @@ namespace ConsoleCheckers
             {
                 for (int v = 0; v <= 7; v++)
                 {
-                    board[h, v].Piece = state.board[h, v].Piece;
+                    board[h, v].PieceType = state.board[h, v].PieceType;
                 }
             }
 
@@ -86,7 +87,7 @@ namespace ConsoleCheckers
         /// Place a new SquareState at the given coordinates, initialized to the given
         /// Piece value.
         /// </summary>
-        public void SetSquare(int h, int v, Piece piece)
+        public void SetSquare(int h, int v, PieceType piece)
         {
             SetSquare(h, v, new SquareState(piece));
         }

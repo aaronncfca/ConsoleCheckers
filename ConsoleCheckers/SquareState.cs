@@ -2,18 +2,18 @@
 {
     public class SquareState
     {
-        public SquareState() : this(State.Piece.Empty) { }
+        public SquareState() : this(State.PieceType.Empty) { }
 
-        public SquareState(State.Piece p)
+        public SquareState(State.PieceType p)
         {
-            Piece = p;
+            PieceType = p;
         }
 
-        public State.Piece Piece { get; set; }
+        public State.PieceType PieceType { get; set; }
 
         public bool IsEmpty()
         {
-            return (Piece == State.Piece.Empty);
+            return (PieceType == State.PieceType.Empty);
         }
     }
 }
