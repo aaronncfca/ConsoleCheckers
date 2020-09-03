@@ -94,7 +94,8 @@ namespace ConsoleCheckers
 
             // If the given piece is replacing another one, remove the overwritten
             // piece from the list.
-            if(oldPiece.PieceType != PieceType.Empty)
+            // Note that oldPiece may be null when called from the constructor.
+            if(oldPiece != null && (oldPiece.PieceType != PieceType.Empty))
             {
                 Pieces.Remove(oldPiece);
             }
