@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Collections.Generic;
+using System.Threading;
 
 namespace ConsoleCheckers
 {
@@ -35,7 +36,8 @@ namespace ConsoleCheckers
 
         public State()
         {
-            board = new SquareState[8, 8];
+            Board = new SquareState[8, 8];
+            Pieces = new List<SquareState>();
 
             for (int h = 1; h <= 8; h++)
             {
@@ -55,12 +57,14 @@ namespace ConsoleCheckers
         /// <param name="state">State to copy</param>
         public State(State state)
         {
-            board = new SquareState[8, 8];
+            Board = new SquareState[8, 8];
+            Pieces = new List<SquareState>();
 
             for (int h = 1; h <= 8; h++)
             {
                 for (int v = 1; v <= 8; v++)
                 {
+                    // SetSquare will populate Board and Pieces for us.
                     SetSquare(h, v, state[h, v].PieceType);
                 }
             }
@@ -74,7 +78,7 @@ namespace ConsoleCheckers
         /// </summary>
         public SquareState GetSquare(int h, int v)
         {
-            return board[ConvertCoord(h), ConvertCoord(v)];
+            return Board[ConvertCoord(h), ConvertCoord(v)];
         }
 
         /// <summary>
@@ -82,9 +86,18 @@ namespace ConsoleCheckers
         /// </summary>
         public void SetSquare(int h, int v, SquareState state)
         {
+            var oldPiece = GetSquare(h, v);
+
             // ConvertCoord will throw an exception if out of bounds.
-            board[ConvertCoord(h), ConvertCoord(v)] = state;
+            Board[ConvertCoord(h), ConvertCoord(v)] = state;
             state.Move(h, v);
+
+            // If the given piece is replacing another one, remove the overwritten
+            // piece from the list.
+            if(oldPiece.PieceType != PieceType.Empty)
+            {
+                Pieces.Remove(oldPiece);
+            }
         }
 
         /// <summary>
@@ -94,7 +107,15 @@ namespace ConsoleCheckers
         public void SetSquare(int h, int v, PieceType piece)
         {
             // The coords of the new SquareSpace will be set in SetSquare, so we use 1, 1 here.
-            SetSquare(h, v, new SquareState(1, 1, piece));
+            var newPiece = new SquareState(1, 1, piece);
+
+            SetSquare(h, v, newPiece);
+
+            // If this is a new piece, add it to the list.
+            if(piece != PieceType.Empty)
+            {
+                Pieces.Add(newPiece);
+            }
         }
 
         public SquareState this[int h, int v]
@@ -127,6 +148,7 @@ namespace ConsoleCheckers
         /// </summary>
         public Tuple<int, int> PieceMustJump { get; set; }
 
-        private SquareState[,] board;
+        private SquareState[,] Board;
+        private List<SquareState> Pieces;
     }
 }
