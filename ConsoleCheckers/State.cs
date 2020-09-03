@@ -5,23 +5,6 @@ namespace ConsoleCheckers
 {
     public class State
     {
-        public class SquareState
-        {
-            public SquareState() : this(Piece.Empty) { }
-
-            public SquareState(Piece p)
-            {
-                Piece = p;
-            }
-
-            public Piece Piece { get; set; }
-
-            public bool IsEmpty()
-            {
-                return (Piece == Piece.Empty);
-            }
-        }
-
         public enum Piece
         {
             Empty = 0,

@@ -128,7 +128,7 @@ namespace ConsoleCheckers
         {
             while (true)
             {
-                var temp = new State.SquareState();
+                var temp = new SquareState();
                 if (blackTurn)
                 {
                     temp.Piece = State.Piece.Black;
@@ -210,7 +210,7 @@ namespace ConsoleCheckers
             return str.ToString();
         }
         
-        public string StrSquare(State.SquareState square)
+        public string StrSquare(SquareState square)
         {
             switch (square.Piece)
             {
