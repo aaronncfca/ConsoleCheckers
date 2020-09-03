@@ -1,14 +1,17 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using ConsoleCheckers;
 
 namespace Tests
 {
-    [TestClass]
-    public class UnitTest1
+    public class Tests
     {
-        [TestMethod]
-        public void TestMethod1()
+        [SetUp]
+        public void Setup()
+        {
+        }
+
+        [Test]
+        public void Test1()
         {
             var game = new Game();
             var state = game.GetState();
@@ -18,7 +21,7 @@ namespace Tests
             Assert.IsTrue(state.GetSquare(1, 2).Piece == State.Piece.Empty);
         }
 
-        [TestMethod]
+        [Test]
         public void TryBadMoves()
         {
 
@@ -102,7 +105,7 @@ namespace Tests
         }
 
 
-        [TestMethod]
+        [Test]
         public void TryBasicMoves()
         {
 
@@ -131,7 +134,7 @@ namespace Tests
             catch (RuleBrokenException) { }
         }
 
-        [TestMethod]
+        [Test]
         public void TryJump()
         {
 
@@ -165,7 +168,7 @@ namespace Tests
 
         }
 
-        [TestMethod]
+        [Test]
         public void TryDoubleJump()
         {
             var game = new Game();
