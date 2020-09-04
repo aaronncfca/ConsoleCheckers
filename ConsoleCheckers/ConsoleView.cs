@@ -19,13 +19,12 @@ namespace ConsoleCheckers
             Console.WriteLine("the round piece on the left side downwards.");
             Console.WriteLine();
             Console.WriteLine("KNOWN ISSUE:");
-            Console.WriteLine("    The game engine does not currently check for end-game scenarios or for scenarios");
-            Console.WriteLine("    where a player cannot move. It will continue asking for a valid move even when there");
-            Console.WriteLine("    is none.");
+            Console.WriteLine("    The game engine does not currently check for end-game scenarios.");
             Console.WriteLine();
         }
 
         public event EventHandler<MoveRequestedEventArgs> MoveRequested;
+        public event EventHandler<EventArgs> PassRequested;
 
         public class MoveRequestedEventArgs
         {
@@ -51,11 +50,26 @@ namespace ConsoleCheckers
 
             while (true)
             {
-                string str = RequestInput(state.IsBlackTurn, false);
+                string str = RequestInput(state.IsBlackTurn);
 
                 if (str == "EXIT") return false;
 
+                if (str == "PASS")
+                {
+                    if (MoveRequested != null)
+                    {
+                        PassRequested(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        throw new Exception("Internal error: Someone ought to be listening."); // Should never happen.
+                    }
+
+                    return true;
+                }
+
                 bool success = true;
+
                 Direction direction = Direction.Northeast;
                 int h = 0, v = 0;
 
@@ -117,14 +131,14 @@ namespace ConsoleCheckers
                 }
                 else
                 {
-                    throw new Exception("Someone ought to be listening."); // Should never happen.
+                    throw new Exception("Internal error: Someone ought to be listening."); // Should never happen.
                 }
 
                 return true;
             }
         }
 
-        private string RequestInput(bool blackTurn, bool isDblJump)
+        private string RequestInput(bool blackTurn)
         {
             while (true)
             {
@@ -143,15 +157,10 @@ namespace ConsoleCheckers
 
                 if (str == "HELP" || str == "?")
                 {
-                    if (!isDblJump)
-                    {
-                        Console.WriteLine("Please type the desired move by indicating the location of the piece followed by the direction to move it.");
-                        Console.WriteLine("For example: A1 SE");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Please type the desired direction to jump. For example: SE");
-                    }
+                    Console.WriteLine("Please type the desired move by indicating the location of the piece followed");
+                    Console.WriteLine("by the direction to move it, or type \"pass\" to pass or \"exit\" to exit.");
+                    Console.WriteLine("For example: A1 SE");
+
                     continue;
                 }
 

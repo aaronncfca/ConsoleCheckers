@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Data;
 
 namespace ConsoleCheckers
 {
@@ -11,6 +11,7 @@ namespace ConsoleCheckers
             consoleView = new ConsoleView();
 
             consoleView.MoveRequested += HandleMoveRequested;
+            consoleView.PassRequested += HandlePassRequested;
 
             consoleView.ShowBoard(game.GetState());
 
@@ -33,6 +34,12 @@ namespace ConsoleCheckers
                 consoleView.ShowError(ex.Message);
             }
 
+        }
+
+        private static void HandlePassRequested(object sender, EventArgs e)
+        {
+            game.Pass();
+            consoleView.ShowBoard(game.GetState());
         }
 
         private static Game game;

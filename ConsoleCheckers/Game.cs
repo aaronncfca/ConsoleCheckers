@@ -78,7 +78,9 @@ namespace ConsoleCheckers
                 }
             }
 
-            stateHistory = new List<State>();
+            // Prepopulate the state history with the initial state, since the history is
+            // updated at the end of each move, not at the beginning.
+            stateHistory = new List<State> { new State(state) };
         }
 
         public State GetState()
@@ -86,6 +88,20 @@ namespace ConsoleCheckers
             return state;
         }
 
+        /// <summary>
+        /// Move the piece at h0, v0 in the given direction.
+        /// 
+        /// Throws RuleBrokenException if the move cannot be made.
+        /// 
+        /// If the given move is a jump and the same piece may make a second jump, canDblJmp will be
+        /// set to true and the next Move should complete that jump unless Pass is invoked.
+        /// </summary>
+        /// <param name="h0">Horizontal coordinate of the piece to be moved</param>
+        /// <param name="v0"></param>
+        /// <param name="direction">The direction to move the piece</param>
+        /// <param name="h1">Set to the new horizonal coordinate (x) of the piece, if moved.</param>
+        /// <param name="v1">Set to the new vertical coordinate (y) of the piece, if moved.</param>
+        /// <param name="canDblJmp">Set to true if the given piece jumped and can take a second jump.</param>
         public void Move(int h0, int v0, Direction direction, out int h1, out int v1, out bool canDblJmp)
         {
             canDblJmp = false;
@@ -144,6 +160,17 @@ namespace ConsoleCheckers
 
             stateHistory.Add(new State(state));
         }
+
+        /// <summary>
+        /// Cede play to the other team.
+        /// </summary>
+        public void Pass()
+        {
+            state.IsBlackTurn = !state.IsBlackTurn;
+
+            stateHistory.Add(new State(state));
+        }
+
 
         private void GetCoords(int h0, int v0, Direction direction, out int h1, out int v1)
         {
