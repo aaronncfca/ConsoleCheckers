@@ -1,13 +1,24 @@
 ﻿using NUnit.Framework;
 using ConsoleCheckers;
+using System.Security.Cryptography;
 
 namespace Tests
 {
     public class Tests
     {
+        private void HandleGameEnded(object sender, Game.GameEndedEventArgs e)
+        {
+            GameEndedTriggered++;
+            GameEndedWinnerIsBlack = e.WinnerIsBlack;
+        }
+
+        private int GameEndedTriggered = 0;
+        private bool GameEndedWinnerIsBlack;
+
         [SetUp]
         public void Setup()
         {
+
         }
 
         [Test]
@@ -294,5 +305,71 @@ namespace Tests
              * SW                            SE
              */
         }
+
+
+        [Test]
+        public void TryGameOver()
+        {
+            var game = new Game();
+            var state = game.GetState();
+
+            game.GameEnded += HandleGameEnded;
+
+            state.IsBlackTurn = true; // Manually ensure white starts.
+
+            // Set up the board
+            game.Move(6, 6, Direction.Northeast, out _, out _, out _);
+            game.Move(1, 3, Direction.Southeast, out _, out _, out _);
+            game.Move(4, 6, Direction.Northwest, out _, out _, out _);
+            game.Move(5, 3, Direction.Southwest, out _, out _, out _);
+            game.Move(5, 7, Direction.Northeast, out _, out _, out _);
+            game.Move(4, 2, Direction.Southeast, out _, out _, out _);
+            game.Move(7, 5, Direction.Northeast, out _, out _, out _);
+            game.Move(5, 3, Direction.Southeast, out _, out _, out _);
+            game.Move(6, 6, Direction.Northeast, out _, out _, out _);
+            game.Move(3, 1, Direction.Southeast, out _, out _, out _);
+            game.Move(3, 5, Direction.Northwest, out _, out _, out _);
+            game.Move(1, 3, Direction.Northeast, out _, out _, out _);
+            game.Move(3, 1, Direction.Southeast, out _, out _, out _);
+            game.Move(5, 3, Direction.Southwest, out _, out _, out _);
+
+            /*
+             * Game should look like this:
+             * NW   A  B  C  D  E  F  G  H   NE
+             *    ┌────────────────────────┐
+             *  1 │(O)         (O)   (O)   │
+             *  2 │               (O)   (O)│
+             *  3 │      (O)         (O)   │
+             *  4 │               (O)   [□]│
+             *  5 │      [K]         [□]   │
+             *  6 │   [□]               [□]│
+             *  7 │[□]   [□]         [□]   │
+             *  8 │   [□]   [□]   [□]   [□]│
+             *    └────────────────────────┘
+             * SW                            SE
+             */
+            game.Move(5, 1, Direction.Southwest, out _, out _, out _);
+            game.Move(7, 5, Direction.Northwest, out _, out _, out _); // Double-jump, A
+            game.Move(5, 3, Direction.Northwest, out _, out _, out _); // Double-jump, B, king me!
+            game.Move(6, 2, Direction.Southwest, out _, out _, out _);
+            game.Move(8, 4, Direction.Northwest, out _, out _, out _); // Jump
+            game.Move(1, 1, Direction.Southeast, out _, out _, out _);
+            game.Move(3, 1, Direction.Southwest, out _, out _, out _); // Jump backwards with a king
+            game.Move(5, 3, Direction.Southwest, out _, out _, out _);
+            game.Move(3, 5, Direction.Northeast, out _, out _, out _); // Jump with a king
+            game.Move(3, 3, Direction.Southeast, out _, out _, out _);
+            game.Move(5, 3, Direction.Southwest, out _, out _, out _); // Jump back with same king
+            game.Move(8, 2, Direction.Southwest, out _, out _, out _); // 2 pieces left
+            game.Move(6, 2, Direction.Northwest, out _, out _, out _); // King me!
+            game.Move(7, 1, Direction.Southwest, out _, out _, out _);
+            game.Pass();
+            game.Move(7, 3, Direction.Southwest, out _, out _, out _);
+            game.Move(5, 1, Direction.Southeast, out _, out _, out _); // Double-jump, A. One piece left now!
+
+            Assert.IsTrue(GameEndedTriggered == 0);
+            game.Move(7, 3, Direction.Southwest, out _, out _, out _); // Double-jump, B. Game over!
+            Assert.IsTrue(GameEndedTriggered == 1);
+        }
     }
+
 }

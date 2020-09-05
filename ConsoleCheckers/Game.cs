@@ -59,6 +59,12 @@ namespace ConsoleCheckers
             Sparce
         }
 
+        public event EventHandler<GameEndedEventArgs> GameEnded;
+        public class GameEndedEventArgs
+        {
+            public bool WinnerIsBlack;
+        }
+
         public Game() : this(Rules.Normal) { }
 
         public Game(Rules r)
@@ -159,7 +165,17 @@ namespace ConsoleCheckers
             }
 
             stateHistory.Add(new State(state));
+
+            if(CheckGameOver())
+            {
+                if(GameEnded != null)
+                {
+                    var e = new GameEndedEventArgs() { WinnerIsBlack = isBlack };
+                    GameEnded(this, e);
+                }
+            }
         }
+
 
         /// <summary>
         /// Cede play to the other team.
@@ -337,6 +353,16 @@ namespace ConsoleCheckers
                 reason = "";
                 return true;
             }
+        }
+
+        private bool CheckGameOver()
+        {
+            // This function is called after IsBlackTurn is switched; therefore we 
+            // should check whether the upcoming player has any pieces on the board.
+            // If not, game over.
+            var playerPieces = state.GetPlayerPieces(state.IsBlackTurn);
+
+            return playerPieces.Count == 0;
         }
 
 

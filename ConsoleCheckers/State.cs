@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Linq;
 using System.Threading;
 
 namespace ConsoleCheckers
@@ -119,10 +121,32 @@ namespace ConsoleCheckers
             }
         }
 
+        /// <summary>
+        /// Get or set the SquareState at the given coordinates.
+        /// 
+        /// Throws ArgumentOutOfRangeException if a coordinate is invalid.
+        /// </summary>
+        /// <param name="h">Horizontal (x) coordinate</param>
+        /// <param name="v">Vertical (y) coordinate</param>
+        /// <returns></returns>
         public SquareState this[int h, int v]
         {
             get { return GetSquare(h, v); }
             set { SetSquare(h, v, value); }
+        }
+
+        /// <summary>
+        /// Gets a list of all the player's pieces remaining on the board.
+        /// </summary>
+        /// <param name="isBlack">True to check for black pieces, false for white.</param>
+        /// <returns></returns>
+        public List<SquareState> GetPlayerPieces(bool isBlack)
+        {
+            var playerPieces = from piece in Pieces
+                               where (piece.PieceType.HasFlag(PieceType.Black) == isBlack)
+                               select piece;
+
+            return playerPieces.ToList();
         }
 
         private int ConvertCoord(int coordinate)

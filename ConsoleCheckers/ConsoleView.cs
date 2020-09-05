@@ -18,8 +18,7 @@ namespace ConsoleCheckers
             Console.WriteLine("to move and the direction to move it. For example, the command \"A3 SE\" would move the");
             Console.WriteLine("the round piece on the left side downwards.");
             Console.WriteLine();
-            Console.WriteLine("KNOWN ISSUE:");
-            Console.WriteLine("    The game engine does not currently check for end-game scenarios.");
+            Console.WriteLine("You can also type \"pass\" to pass or \"help\" for input help.");
             Console.WriteLine();
         }
 
@@ -138,6 +137,7 @@ namespace ConsoleCheckers
             }
         }
 
+
         private string RequestInput(bool blackTurn)
         {
             while (true)
@@ -199,6 +199,27 @@ namespace ConsoleCheckers
             Console.WriteLine("SW                            SE");
             Console.WriteLine();
         }
+
+
+        internal void ShowGameEnded(State state, bool winnerIsBlack)
+        {
+            ShowBoard(state);
+            Console.WriteLine();
+
+            var temp = new SquareState(1, 1);
+            if (winnerIsBlack)
+            {
+                temp.PieceType = State.PieceType.Standard | State.PieceType.Black;
+            }
+            else
+            {
+                temp.PieceType = State.PieceType.Standard;
+            }
+
+            Console.Write($"Congratulations, { StrSquare(temp) } wins!");
+            Console.ReadLine();
+        }
+
 
         private string StrState(State state, bool withCoords, string indent) //TODO: either respect or remove "indent"
         {

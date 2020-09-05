@@ -12,10 +12,11 @@ namespace ConsoleCheckers
 
             consoleView.MoveRequested += HandleMoveRequested;
             consoleView.PassRequested += HandlePassRequested;
+            game.GameEnded += HandleGameEnded;
 
             consoleView.ShowBoard(game.GetState());
 
-            while (true)
+            while (!GameOver)
             {
                 if (!consoleView.GetInput(game.GetState())) return;
             }
@@ -42,7 +43,14 @@ namespace ConsoleCheckers
             consoleView.ShowBoard(game.GetState());
         }
 
+        private static void HandleGameEnded(object sender, Game.GameEndedEventArgs e)
+        {
+            consoleView.ShowGameEnded(game.GetState(), e.WinnerIsBlack);
+            GameOver = true;
+        }
+
         private static Game game;
+        private static bool GameOver = false;
         private static ConsoleView consoleView;
     }
 }
