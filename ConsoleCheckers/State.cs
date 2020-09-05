@@ -76,63 +76,80 @@ namespace ConsoleCheckers
         }
 
         /// <summary>
-        /// Retrieve the SquareState at the given coordinates on the board.
-        /// </summary>
-        public SquareState GetSquare(int h, int v)
-        {
-            return Board[ConvertCoord(h), ConvertCoord(v)];
-        }
-
-        /// <summary>
-        /// Place the given SquareState at the given coordinates on the board.
-        /// </summary>
-        public void SetSquare(int h, int v, SquareState state)
-        {
-            var oldPiece = GetSquare(h, v);
-
-            // ConvertCoord will throw an exception if out of bounds.
-            Board[ConvertCoord(h), ConvertCoord(v)] = state;
-            state.Move(h, v);
-
-            // If the given piece is replacing another one, remove the overwritten
-            // piece from the list.
-            // Note that oldPiece may be null when called from the constructor.
-            if(oldPiece != null && (oldPiece.PieceType != PieceType.Empty))
-            {
-                Pieces.Remove(oldPiece);
-            }
-        }
-
-        /// <summary>
         /// Place a new SquareState at the given coordinates, initialized to the given
         /// Piece value.
+        /// 
+        /// This method should not be called to overwrite existing pieces.
         /// </summary>
         public void SetSquare(int h, int v, PieceType piece)
         {
-            // The coords of the new SquareSpace will be set in SetSquare, so we use 1, 1 here.
-            var newPiece = new SquareState(1, 1, piece);
+            // Ensure this method is not called to remove pieces.
+            if (this[h, v] != null && this[h, v].PieceType != PieceType.Empty) throw new ArgumentException();
 
-            SetSquare(h, v, newPiece);
+            var newPiece = new SquareState(h, v, piece);
+            
+            // ConvertCoord will throw an exception if out of bounds.
+            this[h, v] = newPiece;
 
             // If this is a new piece, add it to the list.
-            if(piece != PieceType.Empty)
+            if (piece != PieceType.Empty)
             {
                 Pieces.Add(newPiece);
             }
         }
 
         /// <summary>
+        /// Move the given piece to the given coordinates.
+        /// </summary>
+        /// <param name="piece"></param>
+        /// <param name="h"></param>
+        /// <param name="v"></param>
+        public void MovePiece(SquareState piece, int h, int v)
+        {
+            // Must move existing piece.
+            if (piece.PieceType == PieceType.Empty) throw new ArgumentException();
+
+            // Must move to empty square.
+            if (this[h, v].PieceType != PieceType.Empty) throw new ArgumentException();
+
+            int h0 = piece.Coords.Item1;
+            int v0 = piece.Coords.Item2;
+
+            // ConvertCoord will throw an exception if out of bounds.
+            this[h, v] = piece;
+            this[h0, v0] = new SquareState(h0, v0); // TODO: fill it with null?
+            piece.Move(h, v);
+        }
+
+
+        public void RemovePiece(int h, int v)
+        {
+            SquareState piece = this[h, v];
+
+            if (piece.PieceType == PieceType.Empty) throw new ArgumentException();
+
+            bool success = Pieces.Remove(piece);
+
+            if (!success) throw new ArgumentException();
+
+            this[h, v] = new SquareState(h, v);
+        }
+
+        /// <summary>
         /// Get or set the SquareState at the given coordinates.
         /// 
         /// Throws ArgumentOutOfRangeException if a coordinate is invalid.
+        /// 
+        /// External callers must use MovePiece or RemovePiece instead of using
+        /// this method to update the state.
         /// </summary>
         /// <param name="h">Horizontal (x) coordinate</param>
         /// <param name="v">Vertical (y) coordinate</param>
         /// <returns></returns>
         public SquareState this[int h, int v]
         {
-            get { return GetSquare(h, v); }
-            set { SetSquare(h, v, value); }
+            get { return Board[ConvertCoord(h), ConvertCoord(v)]; }
+            private set { Board[ConvertCoord(h), ConvertCoord(v)] = value; } 
         }
 
         /// <summary>

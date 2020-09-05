@@ -27,9 +27,9 @@ namespace Tests
             var game = new Game();
             var state = game.GetState();
 
-            Assert.IsTrue(state.GetSquare(1, 1).PieceType == State.PieceType.Standard);
-            Assert.IsTrue(state.GetSquare(8, 8).PieceType == (State.PieceType.Standard | State.PieceType.Black));
-            Assert.IsTrue(state.GetSquare(1, 2).PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[1, 1].PieceType == State.PieceType.Standard);
+            Assert.IsTrue(state[8, 8].PieceType == (State.PieceType.Standard | State.PieceType.Black));
+            Assert.IsTrue(state[1, 2].PieceType == State.PieceType.Empty);
         }
 
         [Test]
@@ -110,9 +110,9 @@ namespace Tests
             catch (RuleBrokenException) { }
 
             // Ensure pieces were not moved
-            Assert.IsTrue(state.GetSquare(1, 1).PieceType == State.PieceType.Standard);
-            Assert.IsTrue(state.GetSquare(3, 3).PieceType == State.PieceType.Standard);
-            Assert.IsTrue(state.GetSquare(1, 3).PieceType == State.PieceType.Standard);
+            Assert.IsTrue(state[1, 1].PieceType == State.PieceType.Standard);
+            Assert.IsTrue(state[3, 3].PieceType == State.PieceType.Standard);
+            Assert.IsTrue(state[1, 3].PieceType == State.PieceType.Standard);
         }
 
 
@@ -128,13 +128,13 @@ namespace Tests
 
             game.Move(1, 3, Direction.Southeast, out _, out _, out canDblJump);
             Assert.IsFalse(canDblJump);
-            Assert.IsTrue(state.GetSquare(1, 3).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(2, 4).PieceType == State.PieceType.Standard);
+            Assert.IsTrue(state[1, 3].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[2, 4].PieceType == State.PieceType.Standard);
 
             game.Move(2, 6, Direction.Northeast, out _, out _, out canDblJump);
             Assert.IsFalse(canDblJump);
-            Assert.IsTrue(state.GetSquare(2, 6).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(3, 5).PieceType == (State.PieceType.Standard | State.PieceType.Black));
+            Assert.IsTrue(state[2, 6].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[3, 5].PieceType == (State.PieceType.Standard | State.PieceType.Black));
 
             try
             {
@@ -157,25 +157,25 @@ namespace Tests
 
             game.Move(1, 3, Direction.Southeast, out _, out _, out canDblJump);
             Assert.IsFalse(canDblJump);
-            Assert.IsTrue(state.GetSquare(1, 3).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(2, 4).PieceType == State.PieceType.Standard);
+            Assert.IsTrue(state[1, 3].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[2, 4].PieceType == State.PieceType.Standard);
 
             game.Move(4, 6, Direction.Northwest, out _, out _, out canDblJump);
             Assert.IsFalse(canDblJump);
-            Assert.IsTrue(state.GetSquare(4, 6).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(3, 5).PieceType == (State.PieceType.Standard | State.PieceType.Black));
+            Assert.IsTrue(state[4, 6].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[3, 5].PieceType == (State.PieceType.Standard | State.PieceType.Black));
 
             game.Move(2, 4, Direction.Southeast, out _, out _, out canDblJump);
             Assert.IsFalse(canDblJump);
-            Assert.IsTrue(state.GetSquare(2, 4).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(3, 5).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(4, 6).PieceType == State.PieceType.Standard);
+            Assert.IsTrue(state[2, 4].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[3, 5].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[4, 6].PieceType == State.PieceType.Standard);
 
             game.Move(5, 7, Direction.Northwest, out _, out _, out canDblJump);
             Assert.IsFalse(canDblJump);
-            Assert.IsTrue(state.GetSquare(5, 7).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(4, 6).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(3, 5).PieceType == (State.PieceType.Standard | State.PieceType.Black));
+            Assert.IsTrue(state[5, 7].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[4, 6].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[3, 5].PieceType == (State.PieceType.Standard | State.PieceType.Black));
 
         }
 
@@ -222,9 +222,9 @@ namespace Tests
 
             game.Move(3, 5, Direction.Northwest, out _, out _, out canDblJump);
 
-            Assert.IsTrue(state.GetSquare(3, 5).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(2, 4).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(1, 3).PieceType == (State.PieceType.Standard | State.PieceType.Black));
+            Assert.IsTrue(state[3, 5].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[2, 4].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[1, 3].PieceType == (State.PieceType.Standard | State.PieceType.Black));
             Assert.IsTrue(canDblJump);
             Assert.IsNotNull(state.PieceMustJump);
             Assert.IsTrue(state.PieceMustJump.Item1 == 1);
@@ -242,9 +242,9 @@ namespace Tests
 
             game.Move(1, 3, Direction.Northeast, out _, out _, out canDblJump);
 
-            Assert.IsTrue(state.GetSquare(1, 3).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(2, 2).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(3, 1).PieceType == (State.PieceType.King | State.PieceType.Black));
+            Assert.IsTrue(state[1, 3].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[2, 2].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[3, 1].PieceType == (State.PieceType.King | State.PieceType.Black));
             Assert.IsTrue(canDblJump); // Should allow enforce triple jump.
             Assert.IsNotNull(state.PieceMustJump);
             Assert.IsTrue(state.PieceMustJump.Item1 == 3);
@@ -262,9 +262,9 @@ namespace Tests
 
             game.Move(3, 1, Direction.Southeast, out _, out _, out canDblJump);
 
-            Assert.IsTrue(state.GetSquare(3, 1).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(4, 2).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(5, 3).PieceType == (State.PieceType.King | State.PieceType.Black));
+            Assert.IsTrue(state[3, 1].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[4, 2].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[5, 3].PieceType == (State.PieceType.King | State.PieceType.Black));
             Assert.IsTrue(canDblJump); // Should allow enforce fourth jump.
             Assert.IsNotNull(state.PieceMustJump);
             Assert.IsTrue(state.PieceMustJump.Item1 == 5);
@@ -282,9 +282,9 @@ namespace Tests
 
             game.Move(5, 3, Direction.Southwest, out _, out _, out canDblJump);
 
-            Assert.IsTrue(state.GetSquare(5, 3).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(4, 4).PieceType == State.PieceType.Empty);
-            Assert.IsTrue(state.GetSquare(3, 5).PieceType == (State.PieceType.King | State.PieceType.Black));
+            Assert.IsTrue(state[5, 3].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[4, 4].PieceType == State.PieceType.Empty);
+            Assert.IsTrue(state[3, 5].PieceType == (State.PieceType.King | State.PieceType.Black));
             Assert.IsFalse(canDblJump); // No more jumps, boohoo. :'(
             Assert.IsNull(state.PieceMustJump);
             Assert.IsFalse(state.IsBlackTurn);

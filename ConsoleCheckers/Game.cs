@@ -132,7 +132,7 @@ namespace ConsoleCheckers
 
             if (!canMove) throw new RuleBrokenException($"Unable to move there: { reason }");
 
-            state[h1, v1] = state[h0, v0];
+            state.MovePiece(state[h0, v0], h1, v1);
 
             int endRow = isBlack ? 1 : 8;
             if(v1 == endRow)
@@ -142,13 +142,11 @@ namespace ConsoleCheckers
                 state[h1, v1].PieceType = State.PieceType.King | (isBlack ? State.PieceType.Black : 0);
             }
 
-            state.SetSquare(h0, v0, State.PieceType.Empty);
-
             if(canJump)
             {
                 // Remove the jumped Piece.
                 GetCoords(h0, v0, direction, out int hJumped, out int vJumped);
-                state.SetSquare(hJumped, vJumped, State.PieceType.Empty);
+                state.RemovePiece(hJumped, vJumped);
 
                 // Check whether a double jump is possible.
                 CanMove(h1, v1, isBlack, out canDblJmp);
