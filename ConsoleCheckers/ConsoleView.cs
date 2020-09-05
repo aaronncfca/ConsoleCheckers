@@ -142,7 +142,7 @@ namespace ConsoleCheckers
         {
             while (true)
             {
-                var temp = new SquareState(1, 1);
+                var temp = new Piece(1, 1);
                 if (blackTurn)
                 {
                     temp.PieceType = State.PieceType.Standard | State.PieceType.Black;
@@ -206,7 +206,7 @@ namespace ConsoleCheckers
             ShowBoard(state);
             Console.WriteLine();
 
-            var temp = new SquareState(1, 1);
+            var temp = new Piece(1, 1);
             if (winnerIsBlack)
             {
                 temp.PieceType = State.PieceType.Standard | State.PieceType.Black;
@@ -240,7 +240,7 @@ namespace ConsoleCheckers
             return str.ToString();
         }
         
-        public string StrSquare(SquareState square)
+        public string StrSquare(Piece square)
         {
             switch (square.PieceType)
             {

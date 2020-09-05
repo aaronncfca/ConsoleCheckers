@@ -38,8 +38,8 @@ namespace ConsoleCheckers
 
         public State()
         {
-            Board = new SquareState[8, 8];
-            Pieces = new List<SquareState>();
+            Board = new Piece[8, 8];
+            Pieces = new List<Piece>();
 
             for (int h = 1; h <= 8; h++)
             {
@@ -59,8 +59,8 @@ namespace ConsoleCheckers
         /// <param name="state">State to copy</param>
         public State(State state)
         {
-            Board = new SquareState[8, 8];
-            Pieces = new List<SquareState>();
+            Board = new Piece[8, 8];
+            Pieces = new List<Piece>();
 
             for (int h = 1; h <= 8; h++)
             {
@@ -86,7 +86,7 @@ namespace ConsoleCheckers
             // Ensure this method is not called to remove pieces.
             if (this[h, v] != null && this[h, v].PieceType != PieceType.Empty) throw new ArgumentException();
 
-            var newPiece = new SquareState(h, v, piece);
+            var newPiece = new Piece(h, v, piece);
             
             // ConvertCoord will throw an exception if out of bounds.
             this[h, v] = newPiece;
@@ -104,7 +104,7 @@ namespace ConsoleCheckers
         /// <param name="piece"></param>
         /// <param name="h"></param>
         /// <param name="v"></param>
-        public void MovePiece(SquareState piece, int h, int v)
+        public void MovePiece(Piece piece, int h, int v)
         {
             // Must move existing piece.
             if (piece.PieceType == PieceType.Empty) throw new ArgumentException();
@@ -117,14 +117,14 @@ namespace ConsoleCheckers
 
             // ConvertCoord will throw an exception if out of bounds.
             this[h, v] = piece;
-            this[h0, v0] = new SquareState(h0, v0); // TODO: fill it with null?
+            this[h0, v0] = new Piece(h0, v0); // TODO: fill it with null?
             piece.Move(h, v);
         }
 
 
         public void RemovePiece(int h, int v)
         {
-            SquareState piece = this[h, v];
+            Piece piece = this[h, v];
 
             if (piece.PieceType == PieceType.Empty) throw new ArgumentException();
 
@@ -132,7 +132,7 @@ namespace ConsoleCheckers
 
             if (!success) throw new ArgumentException();
 
-            this[h, v] = new SquareState(h, v);
+            this[h, v] = new Piece(h, v);
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace ConsoleCheckers
         /// <param name="h">Horizontal (x) coordinate</param>
         /// <param name="v">Vertical (y) coordinate</param>
         /// <returns></returns>
-        public SquareState this[int h, int v]
+        public Piece this[int h, int v]
         {
             get { return Board[ConvertCoord(h), ConvertCoord(v)]; }
             private set { Board[ConvertCoord(h), ConvertCoord(v)] = value; } 
@@ -157,7 +157,7 @@ namespace ConsoleCheckers
         /// </summary>
         /// <param name="isBlack">True to check for black pieces, false for white.</param>
         /// <returns></returns>
-        public List<SquareState> GetPlayerPieces(bool isBlack)
+        public List<Piece> GetPlayerPieces(bool isBlack)
         {
             var playerPieces = from piece in Pieces
                                where (piece.PieceType.HasFlag(PieceType.Black) == isBlack)
@@ -190,7 +190,7 @@ namespace ConsoleCheckers
         /// </summary>
         public Tuple<int, int> PieceMustJump { get; set; }
 
-        private SquareState[,] Board;
-        private List<SquareState> Pieces;
+        private Piece[,] Board;
+        private List<Piece> Pieces;
     }
 }

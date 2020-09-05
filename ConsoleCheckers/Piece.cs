@@ -2,11 +2,11 @@
 
 namespace ConsoleCheckers
 {
-    public class SquareState
+    public class Piece
     {
-        public SquareState(int h, int v) : this(h, v, State.PieceType.Empty) { }
+        public Piece(int h, int v) : this(h, v, State.PieceType.Empty) { }
 
-        public SquareState(int h, int v, State.PieceType p)
+        public Piece(int h, int v, State.PieceType p)
         {
             PieceType = p;
             Coords = new Tuple<int, int>(h, v);
